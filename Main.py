@@ -1,5 +1,4 @@
 from Node import Node
-from BinaryTree import BinaryTree
 from bitarray import bitarray
 import os
 
@@ -151,13 +150,12 @@ if __name__ == '__main__':
         liste_feuilles += [Node(alphabet[key], key)]
 
     # je créer l'arbre de Huffman
-    arbre = creationarbre(liste_feuilles)
-    arbre = BinaryTree(arbre[0])
+    arbre = creationarbre(liste_feuilles)[0]
 
     # 3. Codage du texte
 
     # je parcours l'arbre en profondeur pour récupérer la représentation en binaire de chaque caractère
-    parcours_profondeur = arbre.root.parcours_profondeur()
+    parcours_profondeur = arbre.parcours_profondeur()
 
     # je créer le dictionnaire qui lie caractère et représentation en binaire
     new_alphabet = dict()
