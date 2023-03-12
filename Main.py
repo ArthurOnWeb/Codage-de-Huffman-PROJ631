@@ -89,7 +89,7 @@ def lengthonbit(fichierbase, fichiercompresse):
     taillecompresse = os.path.getsize(fichiercompresse)
     bit_par_caractère = taillecompresse/length
     print(
-        f'le nombre moyen de bit de stockage par caractère est : {bit_par_caractère}')
+        f'le nombre moyen de bit de stockage par caractère est : {bit_par_caractère} bits')
 
 
 if __name__ == '__main__':
