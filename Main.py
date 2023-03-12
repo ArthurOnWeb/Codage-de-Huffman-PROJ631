@@ -96,7 +96,8 @@ if __name__ == '__main__':
 
     # 1. création du dictionnaires avec les caractères et leurs fréquences
 
-    nom_fichier = 'extraitalice.txt'
+    # nom_fichier = 'extraitalice.txt'
+    nom_fichier = input('quel fichier voulez vous compresser ?\n')
     alphabet = alphabet_frequency(nom_fichier)
     liste_caracteres = alphabet.keys()
 
