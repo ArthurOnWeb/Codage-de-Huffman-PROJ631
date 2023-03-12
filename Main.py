@@ -1,48 +1,6 @@
-from Node import Node
+from Node import *
 from bitarray import bitarray
 import os
-
-
-def deuxpetits(liste_node) -> list:
-    """on renvoie les deux plus petits noeuds d'une liste de noeuds
-
-    Args:
-        liste_node (list): liste de noeuds
-
-    Returns:
-        list: [plus_petit_noeud,plus_petit_noeud2]
-    """
-    plus_petit = liste_node[0]
-    liste = liste_node.copy()
-    for node in liste:
-        if plus_petit.frequency > node.frequency:
-            plus_petit = node
-    liste.pop(liste.index(plus_petit))
-    plus_petit2 = liste[0]
-    for node in liste:
-        if plus_petit2.frequency > node.frequency:
-            plus_petit2 = node
-    return [plus_petit, plus_petit2]
-
-
-def creationarbre(liste_feuilles):
-    """Permet de créer l'arbre à partir de ses feuilles en renvoyant sa racine
-
-    Args:
-        liste_feuilles (list): les feuilles de l'arbres
-
-    Returns:
-        list: une liste qui contient la racine de l'arbre
-    """
-    liste_travail = liste_feuilles.copy()
-    if len(liste_travail) == 1:
-        return liste_travail
-    petits = deuxpetits(liste_travail)
-    liste_travail.pop(liste_travail.index(petits[0]))
-    liste_travail.pop(liste_travail.index(petits[1]))
-    liste_travail += [Node(petits[0].frequency+petits[1].frequency,
-                           left_child=petits[0], right_child=petits[1])]
-    return creationarbre(liste_travail)
 
 
 def alphabet_frequency(nom_fichier) -> dict:
