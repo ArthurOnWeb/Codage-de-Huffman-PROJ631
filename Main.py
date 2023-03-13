@@ -87,7 +87,8 @@ def lengthonbit(fichierbase, fichiercompresse):
         reader = f.read()
     length = len(reader)
     taillecompresse = os.path.getsize(fichiercompresse)
-    bit_par_caractère = taillecompresse/length
+    # pour passer de octet/caractère à bit/caractère, il faut diviser par 8 le résultat
+    bit_par_caractère = taillecompresse/length/8
     print(
         f'le nombre moyen de bit de stockage par caractère est : {bit_par_caractère} bits')
 
