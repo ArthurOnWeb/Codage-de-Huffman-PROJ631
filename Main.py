@@ -134,8 +134,7 @@ if __name__ == '__main__':
         nb_caracteres = len(reader)
     with open(nom_fichier[:-4]+'_freq.txt', mode='w') as new_file:
         new_file.write(f'{nb_caracteres}\n')
-        keys = alphabet.keys()
-        for key in keys:
+        for key in liste_caracteres:
             new_file.write(f'{key} {alphabet[key]}\n')
 
     # 4. Détermination du taux de compression
@@ -143,5 +142,10 @@ if __name__ == '__main__':
     compare_size(nom_fichier, nom_fichier[:-4]+'_comp.bin')
 
     # 5. Détermination du nombre moyen de bits de stockage d’un caractère du texte compressé
-
-    lengthonbit(nom_fichier, nom_fichier[:-4]+'_comp.bin')
+    nb_bits = 0
+    nb_caracteres = 0
+    for key in liste_caracteres:
+        nb_caracteres += alphabet[key]
+        nb_bits += len(new_alphabet[key])*alphabet[key]
+    print(
+        f'le nombre moyen de bits de stockage par caractères est : {nb_bits/nb_caracteres} bits')
