@@ -1,6 +1,7 @@
 from Node import *
 from bitarray import bitarray
 import os
+import argparse
 
 
 def alphabet_frequency(nom_fichier) -> dict:
@@ -92,60 +93,88 @@ def lengthonbit(fichierbase, fichiercompresse):
     print(
         f'le nombre moyen de bit de stockage par caractère est : {bit_par_caractère} bits')
 
+def compress(nom_fichier):
+    """Compresse un fichier texte en utilisant l'algorithme de Huffman."""
 
-if __name__ == '__main__':
-
-    # 1. création du dictionnaires avec les caractères et leurs fréquences
-
-    # nom_fichier = 'extraitalice.txt'
-    nom_fichier = input('quel fichier voulez vous compresser ?\n')
     alphabet = alphabet_frequency(nom_fichier)
-    liste_caracteres = alphabet.keys()
+    liste_caracteres = list(alphabet.keys())
 
-    # 2. création de l'arbre
-
-    # je créer les feuilles de mon arbre
-    liste_feuilles = []
-    for key in liste_caracteres:
-        liste_feuilles += [Node(alphabet[key], key)]
-
-    # je créer l'arbre de Huffman
+    liste_feuilles = [Node(alphabet[key], key) for key in liste_caracteres]
     arbre = creationarbre(liste_feuilles)[0]
 
-    # 3. Codage du texte
-
-    # je parcours l'arbre en profondeur pour récupérer la représentation en binaire de chaque caractère
     parcours_profondeur = arbre.parcours_profondeur()
+    new_alphabet = {result[0]: list_to_string(result[2]) for result in parcours_profondeur}
 
-    # je créer le dictionnaire qui lie caractère et représentation en binaire
-    new_alphabet = dict()
-    for result in parcours_profondeur:
-        new_alphabet[result[0]] = list_to_string(result[2])
-
-    # je créer le fichier qui contient le texte compressé
     texte_compresse = text_to_bitarray(nom_fichier, new_alphabet)
-    with open(nom_fichier[:-4]+'_comp.bin', mode='wb',) as new_file:
+    with open(nom_fichier[:-4] + '_comp.bin', 'wb') as new_file:
         texte_compresse.tofile(new_file)
 
-    # je créer le fichier qui va contenir le dictionnaire contenant l'alphabet ainsi que les fréquences d'apparition des caractères
-
-    with open(nom_fichier, mode='r') as f:
+    with open(nom_fichier, 'r') as f:
         reader = f.read()
         nb_caracteres = len(reader)
-    with open(nom_fichier[:-4]+'_freq.txt', mode='w') as new_file:
-        new_file.write(f'{nb_caracteres}\n')
+    with open(nom_fichier[:-4] + '_freq.txt', 'w') as new_file:
+        new_file.write(f"{nb_caracteres}\n")
         for key in liste_caracteres:
-            new_file.write(f'{key} {alphabet[key]}\n')
+            new_file.write(f"{key} {alphabet[key]}\n")
 
-    # 4. Détermination du taux de compression
+    compare_size(nom_fichier, nom_fichier[:-4] + '_comp.bin')
 
-    compare_size(nom_fichier, nom_fichier[:-4]+'_comp.bin')
-
-    # 5. Détermination du nombre moyen de bits de stockage d’un caractère du texte compressé
-    nb_bits = 0
-    nb_caracteres = 0
-    for key in liste_caracteres:
-        nb_caracteres += alphabet[key]
-        nb_bits += len(new_alphabet[key])*alphabet[key]
+    nb_bits = sum(len(new_alphabet[key]) * alphabet[key] for key in liste_caracteres)
+    nb_caracteres_total = sum(alphabet[key] for key in liste_caracteres)
     print(
-        f'le nombre moyen de bits de stockage par caractères est : {nb_bits/nb_caracteres} bits')
+        f"le nombre moyen de bits de stockage par caractères est : {nb_bits / nb_caracteres_total} bits")
+
+
+def decompress(nom_fichier):
+    """Recrée le texte original à partir des fichiers de compression."""
+
+    if nom_fichier.endswith('.txt'):
+        nom_fichier = nom_fichier[:-4]
+
+    freq_file = nom_fichier + '_freq.txt'
+    comp_file = nom_fichier + '_comp.bin'
+
+    with open(freq_file, 'r') as f:
+        lines = f.read().splitlines()
+
+    nb_caracteres = int(lines[0])
+    feuilles = []
+    for line in lines[1:]:
+        if not line:
+            continue
+        char = line[0]
+        freq = int(line[2:])
+        feuilles.append(Node(freq, char))
+
+    arbre = creationarbre(feuilles)[0]
+
+    bits = bitarray()
+    with open(comp_file, 'rb') as f:
+        bits.fromfile(f)
+
+    decoded = []
+    node = arbre
+    for bit in bits:
+        node = node.left_child if bit == 0 else node.right_child
+        if node.is_leaf():
+            decoded.append(node.label)
+            if len(decoded) == nb_caracteres:
+                break
+            node = arbre
+
+    output_file = nom_fichier + '_decomp.txt'
+    with open(output_file, 'w') as f:
+        f.write(''.join(decoded))
+    print(f'Fichier d\xE9compress\xE9 \xE9crit dans {output_file}')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Compression et d\xE9compression Huffman')
+    parser.add_argument('fichier', help='Fichier texte (pour la compression) ou nom de base (pour la d\xE9compression)')
+    parser.add_argument('-d', '--decompress', action='store_true', help='D\xE9compresser le fichier sp\xE9cifi\xE9')
+    args = parser.parse_args()
+
+    if args.decompress:
+        decompress(args.fichier)
+    else:
+        compress(args.fichier)

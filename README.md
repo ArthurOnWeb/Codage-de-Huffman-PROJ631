@@ -10,14 +10,19 @@ Ce dépôt contient une implémentation simple de l'algorithme de compression de
 ## Utilisation
 
 1. Placez dans le répertoire un fichier texte à compresser.
-2. Lancez le script principal :
+2. Lancez la compression :
    ```bash
-   python Main.py
+   python Main.py monfichier.txt
    ```
-3. Saisissez le nom du fichier lorsque le programme le demande.
-4. Deux fichiers sont générés :
+   Deux fichiers sont générés :
    - `<nom>_comp.bin` : le texte compressé au format binaire.
    - `<nom>_freq.txt` : les fréquences des caractères utilisées pour la décompression.
+
+3. Pour retrouver le texte d'origine :
+   ```bash
+   python Main.py -d monfichier
+   ```
+   Le fichier `<nom>_decomp.txt` est alors créé.
 
 Le programme affiche également le taux de compression obtenu et le nombre moyen de bits nécessaires par caractère.
 
