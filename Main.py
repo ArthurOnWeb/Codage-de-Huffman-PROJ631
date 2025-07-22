@@ -115,7 +115,7 @@ def compress(nom_fichier):
     with open(nom_fichier[:-4] + '_freq.txt', 'w') as new_file:
         new_file.write(f"{nb_caracteres}\n")
         for key in liste_caracteres:
-            new_file.write(f"{key} {alphabet[key]}\n")
+            new_file.write(f"{ord(key)} {alphabet[key]}\n")
 
     compare_size(nom_fichier, nom_fichier[:-4] + '_comp.bin')
 
@@ -142,9 +142,9 @@ def decompress(nom_fichier):
     for line in lines[1:]:
         if not line:
             continue
-        char = line[0]
-        freq = int(line[2:])
-        feuilles.append(Node(freq, char))
+        parts = line.split()
+        char = chr(int(parts[0]))
+        freq = int(parts[1])
 
     arbre = creationarbre(feuilles)[0]
 
