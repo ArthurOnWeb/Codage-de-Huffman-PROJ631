@@ -1,12 +1,19 @@
 class Node:
-    def __init__(self, frequency, label=None, left_child=None, right_child=None) -> None:
-        """Un noeud contient la fréquence d'apparition du caractère qu'il représente si c'est une feuille sinon, l'addtition de la fréquence d'apparition de ses deux fils
+    def __init__(
+        self,
+        frequency,
+        label=None,
+        left_child=None,
+        right_child=None,
+    ) -> None:
+        """Représente un nœud de l'arbre de Huffman.
 
         Args:
-            frequency (int): la fréquence d'apparition du caractère si c'est une feuille, la somme de celle de ses deux fils sinon
-            label (string, optional): caractère contenu dans la feuille. Defaults to None.
-            left_child (Node, optional): le fils de gauche. Defaults to None.
-            right_child (Node, optional): le fils de droite. Defaults to None.
+            frequency (int): fréquence d'apparition du caractère si c'est une
+                feuille, somme des fréquences des deux fils sinon.
+            label (str, optional): caractère contenu dans la feuille.
+            left_child (Node, optional): fils de gauche.
+            right_child (Node, optional): fils de droite.
         """
         self.frequency = frequency
         self.label = label
@@ -14,39 +21,34 @@ class Node:
         self.right_child = right_child
 
     def is_leaf(self):
-        """vérifies si le noeud est une feuill
-
-        Returns:
-            Bool: True si c'est une feuille, False sinon
-        """
-        if self.left_child == None and self.right_child == None:
-            return True
-        else:
-            return False
+        """Retourne ``True`` si le nœud est une feuille."""
+        return self.left_child is None and self.right_child is None
 
     def parcours_profondeur(self, encodage=None):
-        """Parcours l'arbre en profondeur afin de renvoyer la représentation binaire de chaque caractères
+        """Parcourt l'arbre en profondeur pour obtenir le code binaire des
+        caractères.
 
         Args:
-            encodage (list, optional): permet de garder en mémoire le chemin parcourue sous forme de 0 et de 1. Defaults to None.
+            encodage (list, optional): chemin parcouru sous forme de ``0`` ou
+                ``1``. Defaults to ``None``.
 
         Returns:
-            list: Une liste de liste contenant le caractère, sa fréquence ainsi que sa représentation en binaire
+            list: liste ``[caractère, fréquence, code_binaire]``
         """
         if encodage is None:
             encodage = []
-            
-        if self.is_leaf() == True:
+
+        if self.is_leaf():
             result = encodage[:]
             return [[self.label, self.frequency, result]]
+
         gauche = []
         droite = []
-        if self.left_child != None:
+        if self.left_child is not None:
             gauche = self.left_child.parcours_profondeur(encodage + [0])
-        if self.right_child != None:
+        if self.right_child is not None:
             droite = self.right_child.parcours_profondeur(encodage + [1])
-        # return [encodage[:]+[self.frequency]]+gauche+droite
-        return gauche+droite
+        return gauche + droite
 
 
 def deuxpetits(liste_node) -> list:
