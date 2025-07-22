@@ -24,28 +24,27 @@ class Node:
         else:
             return False
 
-    def parcours_profondeur(self, encodage=[]):
+    def parcours_profondeur(self, encodage=None):
         """Parcours l'arbre en profondeur afin de renvoyer la représentation binaire de chaque caractères
 
         Args:
-            encodage (list, optional): permet de garder en mémoire le chemin parcourue sous forme de 0 et de 1. Defaults to [].
+            encodage (list, optional): permet de garder en mémoire le chemin parcourue sous forme de 0 et de 1. Defaults to None.
 
         Returns:
             list: Une liste de liste contenant le caractère, sa fréquence ainsi que sa représentation en binaire
         """
+        if encodage is None:
+            encodage = []
+            
         if self.is_leaf() == True:
             result = encodage[:]
             return [[self.label, self.frequency, result]]
         gauche = []
         droite = []
         if self.left_child != None:
-            encodage += [0]
-            gauche = self.left_child.parcours_profondeur(encodage)
-            encodage.pop()
+            gauche = self.left_child.parcours_profondeur(encodage + [0])
         if self.right_child != None:
-            encodage += [1]
-            droite = self.right_child.parcours_profondeur(encodage)
-            encodage.pop()
+            droite = self.right_child.parcours_profondeur(encodage + [1])
         # return [encodage[:]+[self.frequency]]+gauche+droite
         return gauche+droite
 
