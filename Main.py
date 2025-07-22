@@ -145,6 +145,7 @@ def decompress(nom_fichier):
         parts = line.split()
         char = chr(int(parts[0]))
         freq = int(parts[1])
+        feuilles.append(Node(freq, char))
 
     arbre = creationarbre(feuilles)[0]
 
